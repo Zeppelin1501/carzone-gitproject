@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'carzone.wsgi.application'
 #     }
 # }
 
-DATABASES = {'default': dj_database_url.config(default='postgres://postgres:qwerty@localhost/carzone_db')}
+DATABASES = {'default': dj_database_url.config(default='postgres://postgres:####@localhost/carzone_db')}
 
 
 # Password validation
@@ -163,7 +163,7 @@ SITE_ID = 1
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'abbaszeppelin@gmail.com'
-EMAIL_HOST_PASSWORD = 'iwhfyjpdzojebjeo'
+EMAIL_HOST_PASSWORD = '#####'
 EMAIL_USE_TLS = True
 
 
