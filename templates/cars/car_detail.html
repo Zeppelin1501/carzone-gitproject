@@ -3,14 +3,16 @@
 {% block title %} | {{single_car.car_title}} {% endblock %}
 {% block content %}
 
+{% load static %}
 {% load humanize %}
+
 <!-- Sub banner start -->
 <div class="sub-banner overview-bgi">
     <div class="container breadcrumb-area">
         <div class="breadcrumb-areas">
             <h1>{{single_car.car_title}}</h1>
             <ul class="breadcrumbs">
-                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li class="active">{{single_car.car_title}}</li>
             </ul>
         </div>
@@ -26,6 +28,7 @@
                 <div class="car-details-section">
                     <!-- Heading start -->
                     <div class="heading-car clearfix">
+                      {% include 'includes/messages.html' %}
                         <div class="pull-left">
                             <h3>{{single_car.car_title}}</h3>
                             <h6>
@@ -33,7 +36,7 @@
                             </h6>
                         </div>
                         <div class="pull-right">
-                            <h3><span>${{single_car.price | intcomma}}</span></h3>
+                            <h3><span>$ {{single_car.price | intcomma}}</span></h3>
                         </div>
                     </div>
                     <div id="carDetailsSlider" class="carousel car-details-sliders slide mb-40">
@@ -107,7 +110,7 @@
                     <div class="tabbing tabbing-box mb-40">
                         <ul class="nav nav-tabs" id="carTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active show" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="one" aria-selected="false">Vehicle Overview</a>
+                                <a class="nav-link active show" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="one" aria-selected="false">Vehicle overview</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="two" aria-selected="false">Features</a>
@@ -133,14 +136,19 @@
                                                 <li>
                                                     {{single_car.features}}
                                                 </li>
+
                                             </ul>
                                         </div>
+
+
                                     </div>
                                 </div>
                             </div>
 
                         </div>
                     </div>
+
+
                 </div>
             </div>
             <div class="col-lg-4 col-md-12">
@@ -178,7 +186,7 @@
                                 <span>Interior: </span>{{single_car.interior}}
                             </li>
                             <li>
-                                <span>Miles: </span>{{single_car.miles | intcomma}} miles
+                                <span>Miles: </span>{{single_car.miles | intcomma}} km
                             </li>
                             <li>
                                 <span>Doors: </span>{{single_car.doors}}
@@ -187,7 +195,7 @@
                                 <span>Passengers: </span>{{single_car.passengers}}
                             </li>
                             <li>
-                                <span>Vin No: </span>{{single_car.vin_no}}
+                                <span>Vin No.: </span>{{single_car.vin_no}}
                             </li>
                             <li>
                                 <span>Milage: </span>{{single_car.milage}}
@@ -208,21 +216,32 @@
                         <div class="modal-content">
                           <div class="contact-dealer modal-header">
                             <!-- <h5 class="modal-title" id="inquiryModalLabel">Contact Dealer</h5> -->
-                            <img src="img/logos/logo-black-white.png">
+                            <center><img src="{% static 'img/logos/logo-black-white.png' %}"></center>
                             <button type="button" class="close" data-dismiss="modal">
                               <span>&times;</span>
                             </button>
                           </div>
                           <div class="modal-body">
-                            <form action="#">
+                            <form action="{% url 'inquiry' %}" method="POST">
+                              {% csrf_token %}
+
+                              {% if user.is_authenticated %}
+                                <input type="hidden" name="user_id" value="{{user.id}}">
+                              {% else %}
+                                <input type="hidden" name="user_id" value="0">
+                              {% endif %}
+
+                              <input type="hidden" name="car_id" value="{{single_car.id}}">
                                 <div class="form-group">
                                   <label for="name" class="col-form-label">Hello, My Name is</label>
                                   <div class="row">
                                     <div class="col">
-                                      <input type="text" name="first_name" class="form-control" placeholder="First Name" required>
+                                      <input type="text" name="first_name" class="form-control" placeholder="First Name"
+                                      {% if user.is_authenticated %} value="{{user.first_name}}"  {% endif %} required>
                                     </div>
                                     <div class="col">
-                                      <input type="text" name="last_name" class="form-control" placeholder="Last Name" required>
+                                      <input type="text" name="last_name" class="form-control" placeholder="Last Name"
+                                       {% if user.is_authenticated %} value="{{user.last_name}}"  {% endif %} required>
                                     </div>
                                   </div>
                                 </div>
@@ -236,7 +255,7 @@
                                     </div>
 
                                 <div class="form-group">
-                                  <input type="text" name="car_title" class="form-control" value="LAMBORGHINI HURACÁN." readonly>
+                                  <input type="text" name="car_title" class="form-control" value="{{ single_car.car_title }}" readonly>
                                 </div>
 
                                 <div class="form-group">
@@ -255,7 +274,8 @@
                                   <div class="row">
                                     <div class="col">
                                         <label for="name" class="col-form-label">You can reach me by email at</label>
-                                      <input type="email" name="email" class="form-control" placeholder="Email Address" required>
+                                      <input type="email" name="email" class="form-control" placeholder="Email Address"
+                                       {% if user.is_authenticated %} value="{{user.email}}"  {% endif %} required>
                                     </div>
                                     <div class="col">
                                         <label for="phone" class="col-form-label">or by phone at</label>
